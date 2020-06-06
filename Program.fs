@@ -2,7 +2,7 @@
 open Currency
 
 type Arguments =
-    | [<Mandatory; ExactlyOnce; First; CliPrefix(CliPrefix.None)>] From of amount:float * currency:string
+    | [<Mandatory; ExactlyOnce; CliPrefix(CliPrefix.None)>] From of amount:float * currency:string
     | [<Mandatory; CliPrefix(CliPrefix.None)>] To of currency:string
 
     interface IArgParserTemplate with
