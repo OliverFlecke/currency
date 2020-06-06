@@ -2,7 +2,7 @@
 open Currency
 
 type Arguments =
-    | [<MainCommand; ExactlyOnce; First>] From of amount:float * currency:string
+    | [<Mandatory; ExactlyOnce; First; CliPrefix(CliPrefix.None)>] From of amount:float * currency:string
     | [<Mandatory; CliPrefix(CliPrefix.None)>] To of currency:string
 
     interface IArgParserTemplate with
@@ -26,7 +26,7 @@ let main argv =
                 | Some from ->
                     Seq.iter
                     <| formatConversion from
-                    <| List.map (fun to' -> (convert from to', to')) tos
+                    <| Seq.map (fun to' -> (convert from to', to')) tos
     with e ->
         printfn "%s" e.Message
 

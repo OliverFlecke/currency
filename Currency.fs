@@ -1,5 +1,6 @@
 module Currency
 
+open System
 open FSharp.Data
 
 type Amount = float * string
@@ -13,10 +14,15 @@ let rates (currency: string) =
   |> JsonValue.Parse
 
 let rate (from: string) (to': string) =
-  (rates from)
-    .GetProperty("rates")
-    .GetProperty(to')
-    .AsFloat()
+  let rs = (rates <| from.ToUpperInvariant()).GetProperty("rates")
+  match rs.TryGetProperty(to'.ToUpperInvariant()) with
+    | Some x -> x.AsFloat()
+    | _ ->
+      let supported =
+        rs.Properties()
+        |> Seq.map fst
+        |> String.concat ", "
+      failwith <| String.Format("Currency {0} not supported. Supported currencies: {1}", to', supported)
 
 let convert ((amount, currency): Amount) (to': string) =
   amount * rate currency to'
